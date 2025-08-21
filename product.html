@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickMart Grocery - Products</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h1>Our Grocery Products</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="checkout.html">Checkout</a>
+        <a href="catalog.html">Catalog</a>
+    </nav>
+</header>
+
+<main>
+    <div class="product-grid">
+        <div class="product" data-name="Fresh Apples" data-price="25">
+            <img src="apples.jpg" alt="Apples">
+            <h3>Fresh Apples</h3>
+            <p>R25 per kg</p>
+            <input type="number" value="0" min="0">
+            <button onclick="addToCart(this)">Add to Cart</button>
+        </div>
+
+        <div class="product" data-name="Brown Bread" data-price="15">
+            <img src="bread.jpg" alt="Bread">
+            <h3>Brown Bread</h3>
+            <p>R15 each</p>
+            <input type="number" value="0" min="0">
+            <button onclick="addToCart(this)">Add to Cart</button>
+        </div>
+
+        <div class="product" data-name="Full Cream Milk" data-price="18">
+            <img src="milk.jpg" alt="Milk">
+            <h3>Full Cream Milk</h3>
+            <p>R18 per litre</p>
+            <input type="number" value="0" min="0">
+            <button onclick="addToCart(this)">Add to Cart</button>
+        </div>
+    </div>
+
+    <h3>Cart</h3>
+    <ul id="cartItems"></ul>
+    <p id="totalPrice">Total: R0.00</p>
+
+    <script>
+        let cart = [];
+
+        function addToCart(button) {
+            let productDiv = button.parentElement;
+            let name = productDiv.getAttribute("data-name");
+            let price = parseFloat(productDiv.getAttribute("data-price"));
+            let quantity = parseInt(productDiv.querySelector("input[type=number]").value);
+
+            if (quantity <= 0) {
+                alert("Please enter a quantity greater than 0.");
+                return;
+            }
+
+        
+            let existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                cart.push({name: name, price: price, quantity: quantity});
+            }
+
+            updateCart();
+        }
+
+        function updateCart() {
+            let cartItems = document.getElementById("cartItems");
+            cartItems.innerHTML = "";
+
+            let total = 0;
+            cart.forEach(item => {
+                let li = document.createElement("li");
+                li.textContent = `${item.name} - ${item.quantity} x R${item.price} = R${(item.price*item.quantity).toFixed(2)}`;
+                cartItems.appendChild(li);
+                total += item.price * item.quantity;
+            });
+
+            document.getElementById("totalPrice").textContent = "Total: R" + total.toFixed(2);
+
+           
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+    </script>
+</main>
+
+<footer>
+    &copy; 2025 QuickMart Grocery
+</footer>
+</body>
+</html>

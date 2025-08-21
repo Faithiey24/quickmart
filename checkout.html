@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickMart - Order Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h1>Place Your Order</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="checkout.html">Checkout</a>
+        <a href="catalog.html">Catalog</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="main-pane">
+        <form onsubmit="return submitOrder()">
+            <label>Full Name:</label><br>
+            <input type="text" id="customerName" required><br><br>
+
+            <label>Email:</label><br>
+            <input type="email" id="customerEmail" required><br><br>
+
+            <label>Address:</label><br>
+            <textarea id="customerAddress" required></textarea><br><br>
+
+            <label>Payment Method:</label><br>
+            <select id="paymentMethod">
+                <option>Credit Card</option>
+                <option>Cash on Delivery</option>
+            </select><br><br>
+
+            <h3>Your Cart</h3>
+            <ul id="orderCart"></ul>
+            <p id="orderTotal">Total: R0.00</p>
+
+            <button type="submit">Submit Order</button>
+        </form>
+    </div>
+</div>
+
+<footer>
+    &copy; 2025 QuickMart Grocery Store
+</footer>
+
+<script>
+   
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    function displayOrderCart() {
+        let orderCart = document.getElementById("orderCart");
+        orderCart.innerHTML = "";
+        let total = 0;
+
+        cart.forEach(item => {
+            let li = document.createElement("li");
+            li.textContent = `${item.name} - ${item.quantity} x R${item.price} = R${(item.price*item.quantity).toFixed(2)}`;
+            orderCart.appendChild(li);
+            total += item.price * item.quantity;
+        });
+
+        document.getElementById("orderTotal").textContent = "Total: R" + total.toFixed(2);
+    }
+
+    displayOrderCart();
+
+    function submitOrder() {
+        let name = document.getElementById("customerName").value.trim();
+        let email = document.getElementById("customerEmail").value.trim();
+        let address = document.getElementById("customerAddress").value.trim();
+
+        if (name === "" || email === "" || address === "") {
+            alert("Please fill in all customer details.");
+            return false;
+        }
+
+        if (!email.includes("@") || !email.includes(".")) {
+            alert("Please enter a valid email address.");
+            return false;
+        }
+
+        if (cart.length === 0) {
+            alert("Your cart is empty!");
+            return false;
+        }
+
+        let total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        alert(`Thank you, ${name}! Your order has been placed. Total: R${total.toFixed(2)}`);
+        localStorage.removeItem("cart"); 
+        return true;
+    }
+</script>
+</body>
+</html>
